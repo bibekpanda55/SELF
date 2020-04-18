@@ -158,6 +158,8 @@ private FirebaseFirestore db=FirebaseFirestore.getInstance();
                                         @Override
                                         public void onSuccess(DocumentReference documentReference) {
                                             progressBar.setVisibility(View.INVISIBLE);
+                                             journal.setDocumentId(documentReference.getId());
+                                            documentReference.set(journal);
                                             startActivity(new Intent(PostJournalActivity.this,JournalListActivity.class));
                                             finish();
                                         }
