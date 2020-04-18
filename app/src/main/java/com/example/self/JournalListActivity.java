@@ -98,6 +98,31 @@ public class JournalListActivity extends AppCompatActivity {
                                       ,journalList);
                               recyclerView.setAdapter(journalRecyclerAdapter);
                               journalRecyclerAdapter.notifyDataSetChanged();
+                              
+                               new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0,ItemTouchHelper.LEFT|ItemTouchHelper.RIGHT) {
+                                      @Override
+                                      public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+                                          return false;
+                                      }
+
+                                      @Override
+                                      public void onSwiped(@NonNull final RecyclerView.ViewHolder viewHolder, int direction) {
+                                          final Journal journal=journalList.get(viewHolder.getAdapterPosition());
+                                          if(journal.getDocumentId()!=null)
+                                          {
+                                              collectionReference.document(journal.getDocumentId()).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                  @Override
+                                                  public void onSuccess(Void aVoid) {
+                                                      Toast.makeText(JournalListActivity.this,"Item Deleted",Toast.LENGTH_SHORT).show();
+                                                      journalList.remove(journal);
+                                                      journalRecyclerAdapter.notifyItemRemoved(viewHolder.getAdapterPosition());
+                                                  }
+                                              });
+                                          }
+
+
+                                      }
+                                  }).attachToRecyclerView(recyclerView);
                           }
                           else
                           {
